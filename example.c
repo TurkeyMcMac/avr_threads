@@ -6,7 +6,6 @@
 #include <util/delay.h>
 #include <util/setbaud.h>
 
-
 static void init_ports(void)
 {
 	DDRB = _BV(PB3) | _BV(PB4) | _BV(PB5);
@@ -19,23 +18,25 @@ static void init_timer(void)
 	sei();
 }
 
+// noinline tests the stacks of the different threads:
+__attribute__((noinline))
+void wait(unsigned char id)
+{
+	_delay_ms(60);
+	for (unsigned char i = 0; i < 4 + id * 2; ++i) {
+		_delay_ms(20);
+	}
+}
+
 static void child(void *arg)
 {
 	unsigned char id = *(unsigned char *)arg;
-	unsigned char mask = 1 << (3 + id);
-	unsigned char i;
-//	for (i = 0; i < id; ++i) {
-//		_delay_ms(100);
-//	}
-	for (unsigned char i = 0; i < 4 + id; ++i) {
+	unsigned char mask = _BV(id + 3);
+	for (unsigned char i = 0; i < (4 + id)*2; ++i) {
+		wait(id);
 		cli();
-		PORTB |= mask;
+		PORTB ^= mask;
 		sei();
-		_delay_ms(100);
-		cli();
-		PORTB &= ~mask;
-		sei();
-		_delay_ms(100);
 	}
 	avrt_exit();
 }

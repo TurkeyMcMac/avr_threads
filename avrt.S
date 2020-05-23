@@ -16,10 +16,6 @@ Thread structure:
 
 #define MASK_MAX_THREADS (AVRT_MAX_THREADS - 1)
 
-#define PASTE(a, b) PASTE1(a, b)
-#define PASTE1(a, b) PASTE2(a, b)
-#define PASTE2(a, b) a##b
-
 #define USED_FLAG 0x80
 
 .text
@@ -36,10 +32,10 @@ Thread structure:
 .type AVRT_INTERRUPT, @function
 
 __tmp_reg__ = 0
-__zero_reg__ = 0
-__SREG__ = 0x3F
+__zero_reg__ = 1
 __SP_L__ = 0x3D
-__SP_H__ = 0x3F
+__SP_H__ = 0x3E
+__SREG__ = 0x3F
 
 avrt_init:
 	in __tmp_reg__, __SREG__
@@ -71,8 +67,8 @@ avrt_start:
 0:	cpi r27, AVRT_MAX_THREADS
 	brge .Lnone
 	ld r26, Z
-	cpi r26, USED_FLAG
-	brne .Lfound
+	tst r26
+	breq .Lfound
 	inc r27
 	adiw ZL, THREAD_SIZE
 	rjmp 0b
@@ -90,8 +86,6 @@ avrt_start:
 	out __SREG__, __tmp_reg__
 	ret
 .Lnone:
-.Ll:	cpi r26, USED_FLAG
-	brne .Ll
 	ldi r24, -1
 	out __SREG__, __tmp_reg__
 	ret
