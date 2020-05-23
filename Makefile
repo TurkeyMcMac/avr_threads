@@ -1,4 +1,4 @@
-flags = -mmcu=atmega328p -O3 -flto
+flags = -mmcu=atmega328p -O3
 programmer = arduino
 partno = m328p
 port = /dev/ttyUSB0
