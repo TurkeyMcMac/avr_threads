@@ -91,15 +91,15 @@ avrt_start:
 
 avrt_exit:
 	cli
-	lds r17, current_thread
 	ldi ZL, lo8(thread_buf)
 	ldi ZH, hi8(thread_buf)
-0:	tst r17
-	breq 1f
-	dec r17
-	adiw ZL, THREAD_SIZE
-	rjmp 0b
-1:	st Z, __zero_reg__
+	lds r17, current_thread
+	ldi r18, THREAD_SIZE
+	mul r17, r18
+	add ZL, r0
+	adc ZH, r1
+	clr __zero_reg__
+	st Z, __zero_reg__
 avrt_yield:
 	cli
 AVRT_INTERRUPT:
