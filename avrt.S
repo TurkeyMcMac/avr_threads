@@ -20,7 +20,9 @@ The stack pointer in the thread structure points to the top of the stack state.
 
 #define THREAD_STACK_SAVE_SIZE 35
 
-#define USED_FLAG 0x80
+/* Don't change these flag values! */
+#define RUNNING_FLAG 0x80
+#define BLOCKED_FLAG 0x40
 
 .text
 
@@ -28,12 +30,18 @@ The stack pointer in the thread structure points to the top of the stack state.
 .type avrt_init, @function
 .global avrt_start
 .type avrt_start, @function
+.global avrt_block
+.type avrt_block, @function
 .global avrt_exit
 .type avrt_exit, @function
 .global avrt_yield
 .type avrt_yield, @function
 .global AVRT_INTERRUPT
 .type AVRT_INTERRUPT, @function
+.global avrt_unblock
+.type avrt_unblock, @function
+.global avrt_self
+.type avrt_self, @object
 
 __tmp_reg__ = 0
 __zero_reg__ = 1
@@ -55,7 +63,7 @@ avrt_init:
 	adiw ZL, THREAD_SIZE
 	rjmp 0b
 1:	; Mark thread 0 as used:
-	ldi r24, USED_FLAG
+	ldi r24, RUNNING_FLAG
 	sts thread_buf, r24
 	ldi r24, 0
 	out __SREG__, __tmp_reg__
@@ -77,7 +85,7 @@ avrt_start:
 	adiw ZL, THREAD_SIZE
 	rjmp 0b
 .Lfound:
-	ldi r26, USED_FLAG
+	ldi r26, RUNNING_FLAG
 	st Z, r26
 	; Offset the stack (simulate pushing a bunch) and store it:
 	subi r20, THREAD_STACK_SAVE_SIZE
@@ -102,17 +110,20 @@ avrt_start:
 	ret
 .size avrt_start, . - avrt_start
 
-avrt_exit:
+avrt_block:
+	; The flags will be set to BLOCKED_FLAG:
+	ldi r24, BLOCKED_FLAG
+set_flags_and_yield:
 	cli
 	ldi ZL, lo8(thread_buf)
 	ldi ZH, hi8(thread_buf)
-	lds r17, current_thread
-	ldi r18, THREAD_SIZE
-	mul r17, r18
+	lds r18, avrt_self
+	ldi r19, THREAD_SIZE
+	mul r18, r19
 	add ZL, r0
 	adc ZH, r1
 	clr __zero_reg__
-	st Z, __zero_reg__
+	st Z, r24
 avrt_yield:
 	cli
 AVRT_INTERRUPT:
@@ -155,7 +166,7 @@ AVRT_INTERRUPT:
 	; Point Z to the current thread and set r18 to its ID:
 	ldi ZL, lo8(thread_buf)
 	ldi ZH, hi8(thread_buf)
-	lds r18, current_thread
+	lds r18, avrt_self
 	ldi r19, THREAD_SIZE
 	mul r18, r19
 	add ZL, r0
@@ -176,10 +187,10 @@ AVRT_INTERRUPT:
 	ldi ZH, hi8(thread_buf)
 1:	ld r17, Z
 	tst r17
-	; Loop until a running thread is found:
-	breq 0b
+	; Loop until a running thread is found (brpl = RUNNING_FLAG not set):
+	brpl 0b
 	; Set the current thread ID to the newfound thread:
-	sts current_thread, r18
+	sts avrt_self, r18
 	; Restore the context of the new thread:
 	; Restore the stack pointer:
 	ldd __tmp_reg__, Z+1
@@ -226,17 +237,44 @@ AVRT_INTERRUPT:
 	reti
 .size AVRT_INTERRUPT, . - AVRT_INTERRUPT
 .size avrt_yield, . - avrt_yield
+.size set_flags_and_yield, . - set_flags_and_yield
+.size avrt_block, . - avrt_block
+
+avrt_exit:
+	; The flags will be set to zero:
+	clr r24
+	rjmp set_flags_and_yield
 .size avrt_exit, . - avrt_exit
+
+avrt_unblock:
+	in r26, __SREG__
+	cli
+	ldi ZL, lo8(thread_buf)
+	ldi ZH, hi8(thread_buf)
+	ldi r25, THREAD_SIZE
+	mul r24, r25
+	add ZL, r0
+	adc ZH, r1
+	clr r24
+	ld r27, Z
+	cpi r27, BLOCKED_FLAG
+	brne 0f
+	ldi r27, RUNNING_FLAG
+	st Z, r27
+	ldi r24, 1
+0:	clr __zero_reg__
+	out __SREG__, r26
+	ret
+.size avrt_unblock, . - avrt_unblock
 
 .data
 
 .type thread_buf, @object
-.type current_thread, @object
 
 thread_buf:
 .space AVRT_MAX_THREADS * THREAD_SIZE
 .size thread_buf, . - thread_buf
 
-current_thread:
+avrt_self:
 .byte 0
-.size current_thread, 1
+.size avrt_self, 1

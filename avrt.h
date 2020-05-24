@@ -1,9 +1,15 @@
 #ifndef AVR_THREADS_H_
 #define AVR_THREADS_H_
 
+extern const unsigned char avrt_self;
+
 unsigned char avrt_init(void);
 
 signed char avrt_start(void *arg, void (*func)(void *arg), void *stack);
+
+void avrt_block(void);
+
+_Bool avrt_unblock(unsigned char thread);
 
 void avrt_yield(void);
 
