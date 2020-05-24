@@ -103,8 +103,6 @@ avrt_start:
 .size avrt_start, . - avrt_start
 
 avrt_exit:
-;	rcall avrt_yield
-;	rjmp avrt_exit
 	cli
 	ldi ZL, lo8(thread_buf)
 	ldi ZH, hi8(thread_buf)
