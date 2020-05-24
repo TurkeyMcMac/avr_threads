@@ -20,6 +20,10 @@ The stack pointer in the thread structure points to the top of the stack state.
 
 #define THREAD_STACK_SAVE_SIZE 35
 
+#if THREAD_SAVE_STACK_SIZE > AVRT_MIN_STACK_SIZE
+#	error THREAD_SAVE_STACK_SIZE > AVRT_MIN_STACK_SIZE
+#endif
+
 /* Don't change these flag values! */
 #define RUNNING_FLAG 0x80
 #define BLOCKED_FLAG 0x40

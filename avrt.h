@@ -1,6 +1,8 @@
 #ifndef AVR_THREADS_H_
 #define AVR_THREADS_H_
 
+#define AVRT_MIN_STACK_SIZE 35
+
 extern const unsigned char avrt_self;
 
 unsigned char avrt_init(void);
