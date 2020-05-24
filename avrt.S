@@ -14,8 +14,6 @@ Thread structure:
 
 #define THREAD_SIZE 38
 
-#define MASK_MAX_THREADS (AVRT_MAX_THREADS - 1)
-
 #define USED_FLAG 0x80
 
 .text
@@ -132,9 +130,10 @@ AVRT_INTERRUPT:
 	; Y and Z now point to the current thread.
 0:	adiw ZL, THREAD_SIZE
 	inc r18
-	andi r18, MASK_MAX_THREADS
-	brne 1f
-	; Wrap Z to the start when the iterator wraps to zero:
+	cpi r18, AVRT_MAX_THREADS
+	brlt 1f
+	; Wrap back to the start:
+	clr r18
 	ldi ZL, lo8(thread_buf)
 	ldi ZH, hi8(thread_buf)
 1:	ld r17, Z
