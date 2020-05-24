@@ -6,7 +6,8 @@
  * Context Switch Interrupts
  * You will have to set up a timer to cause periodic context switch interrupts.
  * When compiling, define AVRT_INTERRUPT to be the symbol to use for the
- * interrupt, e.g. TIMER0_OVF_vect.
+ * interrupt, e.g. TIMER0_OVF_vect. Because interrupts are used, use cli and sei
+ * around sections that need to be atomic.
  *
  * Thread Numbering
  * Only a fixed number of threads is supported. When compiling, define
