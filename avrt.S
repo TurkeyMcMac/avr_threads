@@ -116,7 +116,8 @@ avrt_exit:
 avrt_yield:
 	cli
 AVRT_INTERRUPT:
-	; Save Y, Z, and some temporary registers:
+	; The instruction pointer has been saved by the hardware.
+	; Save registers and SREG on the stack too:
 	push r0
 	push r1
 	push r2
