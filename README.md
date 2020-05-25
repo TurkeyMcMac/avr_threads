@@ -4,7 +4,7 @@ AVR microcontrollers have timers which can fire interrupts at intervals. This
 mechanism can be used to implement preemptive multitasking (no explicit context
 switches needed) for the AVR. There is an overall speed penalty due to context
 switching because AVR microcontrollers do not have multiple cores. I do not see
-a practical use for this, but I think it's interesting.
+a practical use for this library, but I think it's interesting.
 
 ## Platform support
 
