@@ -12,7 +12,7 @@
  * Thread Numbering
  * Only a fixed number of threads is supported. When compiling, define
  * AVRT_MAX_THREADS to a positive number, the maximum number of threads at a
- * time. AVRT_MAX_THREADS must be less than 128. A thread ID is a number between 
+ * time. AVRT_MAX_THREADS must be less than 129. A thread ID is a number between
  * 0 and AVRT_MAX_THREADS - 1, inclusive.
  *
  * Interrupt Safety
