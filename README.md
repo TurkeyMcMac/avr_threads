@@ -38,17 +38,11 @@ You might need to set `port=...` if the board is not connected to
 `/dev/ttyUSB0`. For example, if the board is on `/dev/ttyUSB1`, use
 `make port=/dev/ttyUSB1 ...`.
 
-## Example
+## Examples
 
-There is an example in `example.c`. Three threads are used, including the main
-thread. Each thread blinks a port. The main thread blinks port B bit 3 four
-times quickly. The next thread blinks port B bit 4 five times at a slower pace.
-The final thread blinks port B bit 5 six times even slower. To run this example,
-connect LEDs or something to the ports. Notice that everything gets faster as
-threads finish, since the time is being shared between fewer threads.
+Examples are in the `examples` directory. Read more about each example in its
+directory.
 
 ## Testing
 
-The only test right now is the example. The code has been very difficult for me
-to get right, and I don't know if it is right yet. I will try to add more tests
-later.
+The only test right now are the examples. I might add more later.

@@ -1,8 +1,5 @@
 #include <avr/io.h>
 
-#define AVRT_MAX_THREADS 4
-#define AVRT_INTERRUPT TIMER0_OVF_vect
-
 /*
 Thread structure:
 1	flags

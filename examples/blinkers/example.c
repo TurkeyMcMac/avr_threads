@@ -1,8 +1,6 @@
 #include "avrt.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
-#define F_CPU 16000000UL
-#define BAUD 9600
 #include <util/delay.h>
 #include <util/setbaud.h>
 
@@ -51,6 +49,7 @@ int main(void)
 	t2 = avrt_start(&id2, child, stack2 + sizeof(stack2) - 1);
 	init_ports();
 	if (t0 == t1 || t0 == t2 || t1 == t2 || t1 < 0 || t2 < 0)
+		// Error if the thread IDs don't look right:
 		for (PORTB = _BV(PB3) | _BV(PB4) | _BV(PB5);;)
 			;
 	init_timer();

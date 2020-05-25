@@ -1,4 +1,4 @@
-example.hex
-example.elf
+**/example.hex
+**/example.elf
 libavrt.a
 avrt.o
