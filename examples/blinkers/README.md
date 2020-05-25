@@ -8,5 +8,5 @@ finish, since the time is being shared between fewer threads.
 To run the Makefile with this, run make like the following in the project root:
 
 ```
-make ex=blinker ...
+make ex=blinkers ...
 ```
