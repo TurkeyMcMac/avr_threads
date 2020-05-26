@@ -62,7 +62,6 @@ signed char sleep_timer_init(void)
 
 void timer_sleep(int millis)
 {
-	//
 	cli();
 	// Set alarm.
 	times[avrt_self] = millis;
