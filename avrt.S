@@ -64,17 +64,6 @@ __SREG__ = 0x3F
 avrt_init:
 	in __tmp_reg__, __SREG__
 	cli
-	; Make sure all threads but 0 have clear flags (IDK why this is needed):
-	ldi r27, 1
-	ldi ZL, lo8(thread_buf + THREAD_SIZE)
-	ldi ZH, hi8(thread_buf + THREAD_SIZE)
-0:	cpi r27, AVRT_MAX_THREADS
-	brge 1f
-	st Z, __zero_reg__
-	inc r27
-	adiw ZL, THREAD_SIZE
-	rjmp 0b
-1:	; Mark thread 0 as used:
 	ldi r24, RUNNING_FLAG
 	sts thread_buf, r24
 	ldi r24, 0
@@ -279,7 +268,7 @@ avrt_unblock:
 	ret
 .size avrt_unblock, . - avrt_unblock
 
-.data
+.section .bss
 
 .type thread_buf, @object
 
