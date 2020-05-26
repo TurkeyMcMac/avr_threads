@@ -29,7 +29,7 @@ ISR(TIMER2_COMPA_vect)
 {
 	for (char i = 0; i < AVRT_MAX_THREADS; ++i) {
 		if (times[i] >= 0) {
-			// Unblock waiting threads when their alarms goes off:
+			// Unblock waiting threads when their alarms go off:
 			if (times[i] == 0) avrt_unblock(i);
 			--times[i];
 		}
