@@ -1,30 +1,14 @@
-#include <avrt.h>
 #include <avr/interrupt.h>
-#include <avr/io.h>
+#include <example_common.h>
 #include <stddef.h>
-#include <util/setbaud.h>
-#include <util/delay.h>
 
-/** PORT INITIALIZATION **/
-
-void ports_init(void)
-{
-	DDRB |= _BV(PB3) | _BV(PB4) | _BV(PB5);
-}
-
-/** THREAD INITIALIZATION **/
-
-void thread_timer_init(void)
-{
-	TCCR0B = _BV(CS02);
-	TIMSK0 = _BV(TOIE0);
-}
-
-/** SLEEP TIMER **/
-
+/* The list of alarms for each thread. The value is a number of milliseconds, or
+ * -1 if the thread is not blocked waiting. */
 static int times[AVRT_MAX_THREADS];
+/* The stack for the timer dummy thread. */
 static char timer_stack[AVRT_MIN_STACK_SIZE + 16];
 
+/* This interrupt fires every millisecond. */
 ISR(TIMER2_COMPA_vect)
 {
 	for (char i = 0; i < AVRT_MAX_THREADS; ++i) {
@@ -40,11 +24,12 @@ static void dummy_thread(void *arg)
 {
 	(void)arg;
 	for (;;) {
+		// Don't waste the time of other threads:
 		avrt_yield();
 	}
 }
 
-signed char sleep_timer_init(void)
+static signed char sleep_timer_init(void)
 {
 	for (char i = 0; i < AVRT_MAX_THREADS; ++i) {
 		times[i] = -1;
@@ -60,16 +45,15 @@ signed char sleep_timer_init(void)
 	return 0;
 }
 
-void timer_sleep(int millis)
+static void timer_sleep(int millis)
 {
+	// Disable interrupts to make this atomic:
 	cli();
-	// Set alarm.
+	// Set alarm:
 	times[avrt_self] = millis;
 	avrt_block();
 	// Interrupts reenabled by avrt_block().
 }
-
-/** MAIN CODE **/
 
 static void pb3_after_1s(void *arg)
 {
