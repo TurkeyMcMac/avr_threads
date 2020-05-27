@@ -30,7 +30,7 @@ so the program effectively exits.
 #define THREAD_STACK_SAVE_SIZE 35
 
 #if THREAD_STACK_SAVE_SIZE > AVRT_MIN_STACK_SIZE
-#	error THREAD_SAVE_STACK_SIZE > AVRT_MIN_STACK_SIZE
+#	error THREAD_STACK_SAVE_SIZE > AVRT_MIN_STACK_SIZE
 #endif
 
 /* Don't change these flag values! RUNNING_FLAG has to be the high bit because
