@@ -20,6 +20,8 @@
  * interrupts.
  */
 
+#ifndef __ASSEMBLER__
+
 /* Initialize the thread system. The return value is the ID of a newly created
  * thread running the current code. This should be called before the first
  * context switch. */
@@ -39,10 +41,6 @@ extern const unsigned char avrt_self;
  * thread ID for the new thread or -1 if resources are exhausted. */
 signed char avrt_start(void *arg, void (*func)(void *arg), void *stack);
 
-/* The minimum size of a thread's stack, assuming the code it runs does not
- * itself use the stack at all. */
-#define AVRT_MIN_STACK_SIZE 35
-
 /* Block the thread until another thread calls avrt_unblock() with the ID of
  * this thread. This will enable interrupts after it is done. */
 void avrt_block(void);
@@ -61,5 +59,11 @@ void avrt_yield(void);
 
 /* Exit this thread. When all threads exit, the program stops. */
 void avrt_exit(void) __attribute__((noreturn));
+
+#endif /* !defined(__ASSEMBLER__) */
+
+/* The minimum size of a thread's stack, assuming the code it runs does not
+ * itself use the stack at all. */
+#define AVRT_MIN_STACK_SIZE 35
 
 #endif /* AVR_THREADS_H_ */

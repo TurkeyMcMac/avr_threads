@@ -1,3 +1,4 @@
+#include <avrt.h>
 #include <avr/io.h>
 
 /*
@@ -28,7 +29,7 @@ so the program effectively exits.
 
 #define THREAD_STACK_SAVE_SIZE 35
 
-#if THREAD_SAVE_STACK_SIZE > AVRT_MIN_STACK_SIZE
+#if THREAD_STACK_SAVE_SIZE > AVRT_MIN_STACK_SIZE
 #	error THREAD_SAVE_STACK_SIZE > AVRT_MIN_STACK_SIZE
 #endif
 
