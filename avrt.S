@@ -32,7 +32,8 @@ so the program effectively exits.
 #	error THREAD_SAVE_STACK_SIZE > AVRT_MIN_STACK_SIZE
 #endif
 
-/* Don't change these flag values! */
+/* Don't change these flag values! RUNNING_FLAG has to be the high bit because
+ * it is detected as being off using brpl. */
 #define RUNNING_FLAG 0x80
 #define BLOCKED_FLAG 0x40
 
