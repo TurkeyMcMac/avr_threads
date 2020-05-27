@@ -25,7 +25,7 @@ make libavrt.a
 To make the example:
 
 ```
-make example.hex
+make
 ```
 
 To upload the example:
