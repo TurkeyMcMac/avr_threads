@@ -1,24 +1,10 @@
-#include "avrt.h"
+#include <example_common.h>
 #include <avr/interrupt.h>
-#include <avr/io.h>
 #include <util/delay.h>
 #include <util/setbaud.h>
 
-static void init_ports(void)
-{
-	DDRB = _BV(PB3) | _BV(PB4) | _BV(PB5);
-}
-
-static void init_timer(void)
-{
-	TCCR0B = _BV(CS02);
-	TIMSK0 = _BV(TOIE0);
-	sei();
-}
-
-// noinline tests the stacks of the different threads:
-__attribute__((noinline))
-void wait(unsigned char id)
+/* Do some amount of waiting based on the given ID. */
+static void wait(unsigned char id)
 {
 	_delay_ms(60);
 	for (unsigned char i = 0; i < 4 + id * 2; ++i) {
@@ -26,7 +12,8 @@ void wait(unsigned char id)
 	}
 }
 
-static void child(void *arg)
+/* Blink a bunch, duration depending on the given (by reference) ID. */
+static void do_blinks(void *arg)
 {
 	unsigned char id = *(unsigned char *)arg;
 	unsigned char mask = _BV(id + 3);
@@ -43,15 +30,11 @@ int main(void)
 {
 	static char stack1[256], stack2[256];
 	unsigned char id0 = 0, id1 = 1, id2 = 2;
-	signed char t0 = 0, t1 = 1, t2 = 2;
-	t0 = avrt_init();
-	t1 = avrt_start(&id1, child, stack1 + sizeof(stack1) - 1);
-	t2 = avrt_start(&id2, child, stack2 + sizeof(stack2) - 1);
-	init_ports();
-	if (t0 == t1 || t0 == t2 || t1 == t2 || t1 < 0 || t2 < 0)
-		// Error if the thread IDs don't look right:
-		for (PORTB = _BV(PB3) | _BV(PB4) | _BV(PB5);;)
-			;
-	init_timer();
-	child(&id0);
+	avrt_init();
+	avrt_start(&id1, do_blinks, stack1 + sizeof(stack1) - 1);
+	avrt_start(&id2, do_blinks, stack2 + sizeof(stack2) - 1);
+	ports_init();
+	thread_timer_init();
+	sei();
+	do_blinks(&id0);
 }
