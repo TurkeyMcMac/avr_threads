@@ -68,7 +68,6 @@ avrt_init:
 	cli
 	ldi r24, RUNNING_FLAG
 	sts thread_buf, r24
-	ldi r24, 0
 	out __SREG__, __tmp_reg__
 	ret
 .size avrt_init, . - avrt_init
