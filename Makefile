@@ -15,10 +15,10 @@ $(example-dir)/example.elf: $(example-dir)/example.c libavrt.a avrt.h
 	avr-gcc $(flags) -o $@ $< libavrt.a
 
 libavrt.a: avrt.o
-	avr-ar crsu $@ avrt.o
+	avr-ar crsu $@ $<
 
 avrt.o: avrt.S avrt.h
-	avr-gcc $(flags) -c -o $@ avrt.S
+	avr-gcc $(flags) -c -o $@ $<
 
 .PHONY: upload
 upload: $(example-dir)/example.hex
