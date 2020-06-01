@@ -22,10 +22,10 @@
 
 #ifndef __ASSEMBLER__
 
-/* Initialize the thread system. The return value is the ID of a newly created
- * thread running the current code. This should be called before the first
- * context switch. */
-unsigned char avrt_init(void);
+/* Initialize the thread system and register the current thread of execution.
+ * Don't call/access other symbols in this library until you've called this.
+ * Call it only once. */
+void avrt_init(void);
 
 /* The ID of the current thread. This cannot be accessed before avrt_init()
  * is called. It is constant because each thread sees a different constant
