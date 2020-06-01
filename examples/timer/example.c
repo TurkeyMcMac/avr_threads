@@ -11,7 +11,7 @@ static char timer_stack[AVRT_MIN_STACK_SIZE + 16];
 /* This interrupt fires every millisecond. */
 ISR(TIMER2_COMPA_vect)
 {
-	for (char i = 0; i < AVRT_MAX_THREADS; ++i) {
+	for (unsigned char i = 0; i < AVRT_MAX_THREADS; ++i) {
 		if (times[i] >= 0) {
 			// Unblock waiting threads when their alarms go off:
 			if (times[i] == 0) avrt_unblock(i);
@@ -31,7 +31,7 @@ static void dummy_thread(void *arg)
 
 static signed char sleep_timer_init(void)
 {
-	for (char i = 0; i < AVRT_MAX_THREADS; ++i) {
+	for (unsigned char i = 0; i < AVRT_MAX_THREADS; ++i) {
 		times[i] = -1;
 	}
 	// I think this timing is about a millisecond:

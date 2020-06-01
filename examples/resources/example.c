@@ -32,7 +32,7 @@ int main(void)
 	static char stacks[N_CHILD_THREADS][AVRT_MIN_STACK_SIZE + 16];
 	ports_init();
 	avrt_init();
-	for (char i = 0; i < N_CHILD_THREADS; ++i) {
+	for (unsigned char i = 0; i < N_CHILD_THREADS; ++i) {
 		// There will be resources available for the first
 		// AVRT_MAX_THREADS threads (this main thread is the first one):
 		verify(avrt_start(&dones[i], set_true,
@@ -45,7 +45,7 @@ int main(void)
 	// Let the other threads run first:
 	avrt_yield();
 	for (;;) {
-		for (char i = 0; i < N_CHILD_THREADS; ++i) {
+		for (unsigned char i = 0; i < N_CHILD_THREADS; ++i) {
 			_Bool done;
 			cli();
 			done = dones[i];
