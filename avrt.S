@@ -59,9 +59,9 @@ so the program effectively exits.
 
 __tmp_reg__ = 0
 __zero_reg__ = 1
-__SP_L__ = 0x3D
-__SP_H__ = 0x3E
-__SREG__ = 0x3F
+__SP_L__ = _SFR_IO_ADDR(SPL)
+__SP_H__ = _SFR_IO_ADDR(SPH)
+__SREG__ = _SFR_IO_ADDR(SREG)
 
 avrt_init:
 	in __tmp_reg__, __SREG__
