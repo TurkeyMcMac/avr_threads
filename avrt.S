@@ -79,7 +79,7 @@ avrt_start:
 	ldi ZL, lo8(thread_buf)
 	ldi ZH, hi8(thread_buf)
 0:	cpi r27, AVRT_MAX_THREADS
-	brge 2f
+	brge 3f
 	ld r26, Z
 	tst r26
 	breq 1f
@@ -104,12 +104,11 @@ avrt_start:
 	std Z+34, r23
 	std Z+35, r22
 	mov r24, r27
-	out __SREG__, __tmp_reg__
+2:	out __SREG__, __tmp_reg__
 	ret
-2:	; No thread ID available; AVRT_MAX_THREADS exist already.
+3:	; No thread ID available; AVRT_MAX_THREADS exist already.
 	ldi r24, -1
-	out __SREG__, __tmp_reg__
-	ret
+	rjmp 2b
 .size avrt_start, . - avrt_start
 
 avrt_block:
