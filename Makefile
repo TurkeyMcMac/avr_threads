@@ -11,8 +11,11 @@ example-dir = examples/$(ex)
 $(example-dir)/example.hex: $(example-dir)/example.elf
 	avr-objcopy -O ihex $< $@
 
-$(example-dir)/example.elf: $(example-dir)/example.c libavrt.a avrt.h
-	avr-gcc $(flags) -o $@ $< libavrt.a
+$(example-dir)/example.elf: $(example-dir)/example.o libavrt.a
+	avr-gcc $(flags) -o $@ $+
+
+$(example-dir)/example.o: $(example-dir)/example.c avrt.h example_common.h
+	avr-gcc $(flags) -c -o $@ $<
 
 libavrt.a: avrt.o
 	avr-ar crsu $@ $<
@@ -26,4 +29,5 @@ upload: $(example-dir)/example.hex
 
 .PHONY: clean
 clean:
-	rm -f examples/*/example.elf examples/*/example.hex libavrt.a avrt.o
+	rm -f examples/*/example.elf examples/*/example.hex \
+		examples/*/example.o libavrt.a avrt.o

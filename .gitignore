@@ -1,4 +1,5 @@
 examples/*/example.hex
 examples/*/example.elf
+examples/*/example.o
 libavrt.a
 avrt.o
