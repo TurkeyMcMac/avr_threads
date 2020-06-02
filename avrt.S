@@ -181,11 +181,8 @@ AVRT_INTERRUPT:
 0:	adiw ZL, THREAD_SIZE
 	inc r18
 	cpi r18, AVRT_MAX_THREADS
-	brlt 1f
 	; Wrap back to the start:
-	clr r18
-	ldi ZL, lo8(thread_buf)
-	ldi ZH, hi8(thread_buf)
+	breq 2f
 1:	ld r17, Z
 	tst r17
 	; Loop until a running thread is found (brpl = RUNNING_FLAG not set):
@@ -236,6 +233,11 @@ AVRT_INTERRUPT:
 	pop r0
 	; Restore the instruction pointer and enable interrupts:
 	reti
+2:	; Wrap back to the start:
+	clr r18
+	ldi ZL, lo8(thread_buf)
+	ldi ZH, hi8(thread_buf)
+	rjmp 1b
 .size AVRT_INTERRUPT, . - AVRT_INTERRUPT
 .size avrt_yield, . - avrt_yield
 .size set_flags_and_yield, . - set_flags_and_yield
