@@ -79,14 +79,14 @@ avrt_start:
 	ldi ZL, lo8(thread_buf)
 	ldi ZH, hi8(thread_buf)
 0:	cpi r27, AVRT_MAX_THREADS
-	brge .Lnone
+	brge 2f
 	ld r26, Z
 	tst r26
-	breq .Lfound
+	breq 1f
 	inc r27
 	adiw ZL, THREAD_SIZE
 	rjmp 0b
-.Lfound:
+1:	; Unused thread ID found.
 	ldi r26, RUNNING_FLAG
 	st Z, r26
 	; Offset the stack (simulate pushing a bunch) and store it:
@@ -106,7 +106,7 @@ avrt_start:
 	mov r24, r27
 	out __SREG__, __tmp_reg__
 	ret
-.Lnone:
+2:	; No thread ID available; AVRT_MAX_THREADS exist already.
 	ldi r24, -1
 	out __SREG__, __tmp_reg__
 	ret
