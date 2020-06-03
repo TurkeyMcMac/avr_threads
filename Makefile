@@ -7,20 +7,21 @@ partno = m328p
 port = /dev/ttyUSB0
 
 example-dir = examples/$(ex)
+example-headers = avrt.h example_common.h
 
-$(example-dir)/example.hex: $(example-dir)/example.elf
+$(example-dir)/example.hex: $(example-dir)/example.elf Makefile
 	avr-objcopy -O ihex $< $@
 
-$(example-dir)/example.elf: $(example-dir)/example.o libavrt.a
-	avr-gcc $(flags) -o $@ $+
+$(example-dir)/example.elf: $(example-dir)/example.o libavrt.a Makefile
+	avr-gcc $(flags) -o $@ $(example-dir)/example.o libavrt.a
 
-$(example-dir)/example.o: $(example-dir)/example.c avrt.h example_common.h
+$(example-dir)/example.o: $(example-dir)/example.c $(example-headers) Makefile
 	avr-gcc $(flags) -c -o $@ $<
 
-libavrt.a: avrt.o
+libavrt.a: avrt.o Makefile
 	avr-ar crsu $@ $<
 
-avrt.o: avrt.S avrt.h
+avrt.o: avrt.S avrt.h Makefile
 	avr-gcc $(flags) -c -o $@ $<
 
 .PHONY: upload
