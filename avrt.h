@@ -90,6 +90,6 @@ void avrt_dummy_thread(void *arg);
 #define AVRT_MIN_STACK_SIZE 35
 
 /* The minimum safe stack size for a thread running avrt_dummy_thread. */
-#define AVRT_DUMMY_STACK_SIZE (AVRT_MIN_STACK_SIZE + 2)
+#define AVRT_DUMMY_STACK_SIZE AVRT_MIN_STACK_SIZE
 
 #endif /* AVR_THREADS_H_ */

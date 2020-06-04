@@ -273,6 +273,8 @@ avrt_unblock:
 .size avrt_unblock, . - avrt_unblock
 
 avrt_dummy_thread:
+	; Prevent an interrupt between rcall and avrt_yield's cli:
+	cli
 	rcall avrt_yield
 	rjmp avrt_dummy_thread
 .size avrt_dummy_thread, . - avrt_dummy_thread
