@@ -55,7 +55,8 @@ _Bool avrt_unblock(unsigned char thread);
 /* Force a context switch to another thread. This will enable interrupts if they
  * are disabled. Otherwise, calling it does not clobber any state whatsoever. */
 void avrt_yield(void);
-#define avrt_yield() ({ __asm__("call avrt_yield" :::); (void)0; })
+#define avrt_yield() /* This communicates that only the SREG is clobbered. */ \
+	({ __asm__ volatile ("call avrt_yield" ::: "memory"); (void)0; })
 
 /* Exit this thread. When all threads exit, the program stops. */
 void avrt_exit(void) __attribute__((noreturn));
