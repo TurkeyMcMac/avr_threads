@@ -45,6 +45,14 @@ signed char avrt_start(void *arg, void (*func)(void *arg), void *stack);
  * this thread. This will enable interrupts after it is done. */
 void avrt_block(void);
 
+/* Do the same as avrt_block except that interrupts are disabled, not enabled,
+ * afterward. If interrupts were already disabled, there is no point at which an
+ * interrupt can be delivered. This is not a real function because it can be
+ * replicated in assembly just by putting cli directly after the call. */
+#define avrt_block_cli() ({ __asm__ volatile ("call avrt_block\ncli" ::: \
+	"r0", "r18", "r19", "r20", "r21", "r22", "r23", "r24", "r25", "r26", \
+	"r27", "r30", "r31", "memory"); (void)0; })
+
 /* Unblock the existent thread with the given ID. 1 is returned unless the
  * thread was not blocked to begin with. This can be called from interrupts. Due
  * to limitations in the code, a thread must be running to receive an interrupt.
@@ -57,6 +65,13 @@ _Bool avrt_unblock(unsigned char thread);
 void avrt_yield(void);
 #define avrt_yield() /* This communicates that only the SREG is clobbered. */ \
 	({ __asm__ volatile ("call avrt_yield" ::: "memory"); (void)0; })
+
+/* Do the same as avrt_yield except that interrupts are disabled, not enabled,
+ * afterward. If interrupts were already disabled, there is no point at which an
+ * interrupt can be delivered. This is not a real function because it can be
+ * replicated in assembly just by putting cli directly after the call. */
+#define avrt_yield_cli() \
+	({ __asm__ volatile ("call avrt_yield\ncli" ::: "memory"); (void)0; })
 
 /* Exit this thread. When all threads exit, the program stops. */
 void avrt_exit(void) __attribute__((noreturn));
