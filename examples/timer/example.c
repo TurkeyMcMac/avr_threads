@@ -6,7 +6,7 @@
  * -1 if the thread is not blocked waiting. */
 static int times[AVRT_MAX_THREADS];
 /* The stack for the timer dummy thread. */
-static char timer_stack[AVRT_MIN_STACK_SIZE + 16];
+static char timer_stack[AVRT_DUMMY_STACK_SIZE];
 
 /* This interrupt fires every millisecond. */
 ISR(TIMER2_COMPA_vect)
@@ -17,15 +17,6 @@ ISR(TIMER2_COMPA_vect)
 			if (times[i] == 0) avrt_unblock(i);
 			--times[i];
 		}
-	}
-}
-
-static void dummy_thread(void *arg)
-{
-	(void)arg;
-	for (;;) {
-		// Don't waste the time of other threads:
-		avrt_yield();
 	}
 }
 
@@ -41,7 +32,7 @@ static signed char sleep_timer_init(void)
 	TIMSK2 = _BV(OCIE2A);
 	char *stack_end = timer_stack + sizeof(timer_stack) - 1;
 	// At least one thread must be running to make interrupt unblock work:
-	if (avrt_start(NULL, dummy_thread, stack_end) < 0) return -1;
+	if (avrt_start(NULL, avrt_dummy_thread, stack_end) < 0) return -1;
 	return 0;
 }
 

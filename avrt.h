@@ -57,7 +57,7 @@ void avrt_block(void);
  * thread was not blocked to begin with. This can be called from interrupts. Due
  * to limitations in the code, a thread must be running to receive an interrupt.
  * If all threads are blocked, interrupts are blocked. To work around this, keep
- * a thread running calling avrt_yield() in a loop. */
+ * a thread running with avrt_dummy_thread passed to avrt_start. */
 _Bool avrt_unblock(unsigned char thread);
 
 /* Force a context switch to another thread. This will enable interrupts if they
@@ -76,10 +76,20 @@ void avrt_yield(void);
 /* Exit this thread. When all threads exit, the program stops. */
 void avrt_exit(void) __attribute__((noreturn));
 
+/* A function that can be passed to avrt_start. The thread will continuously
+ * yield and never exit. This function is special in that it will never need a
+ * stack larger than AVRT_DUMMY_STACK_SIZE, providing some space savings over
+ * functions without guaranteed stack usage. The thread can be used to receive
+ * interrupts with all other threads blocked. */
+void avrt_dummy_thread(void *arg);
+
 #endif /* !defined(__ASSEMBLER__) */
 
 /* The minimum size of a thread's stack, assuming the code it runs does not
  * itself use the stack at all. */
 #define AVRT_MIN_STACK_SIZE 35
+
+/* The minimum safe stack size for a thread running avrt_dummy_thread. */
+#define AVRT_DUMMY_STACK_SIZE (AVRT_MIN_STACK_SIZE + 2)
 
 #endif /* AVR_THREADS_H_ */

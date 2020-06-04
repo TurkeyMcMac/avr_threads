@@ -54,6 +54,8 @@ so the program effectively exits.
 .type AVRT_INTERRUPT, @function
 .global avrt_unblock
 .type avrt_unblock, @function
+.global avrt_dummy_thread
+.type avrt_dummy_thread, @function
 .global avrt_self
 .type avrt_self, @object
 
@@ -269,6 +271,11 @@ avrt_unblock:
 	out __SREG__, r26
 	ret
 .size avrt_unblock, . - avrt_unblock
+
+avrt_dummy_thread:
+	rcall avrt_yield
+	rjmp avrt_dummy_thread
+.size avrt_dummy_thread, . - avrt_dummy_thread
 
 .section .bss
 
