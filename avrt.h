@@ -89,7 +89,10 @@ void avrt_dummy_thread(void *arg);
  * itself use the stack at all. */
 #define AVRT_MIN_STACK_SIZE 35
 
-/* The minimum safe stack size for a thread running avrt_dummy_thread. */
+/* The minimum safe stack size for a thread running avrt_dummy_thread. The stack
+ * must also be large enough to receive any interrupt, but the space needed is
+ * not in addition to this minimum. Most interrupts need to save lots of state
+ * on the stack, but this stack size is probably good for simple interrupts. */
 #define AVRT_DUMMY_STACK_SIZE AVRT_MIN_STACK_SIZE
 
 #endif /* AVR_THREADS_H_ */
