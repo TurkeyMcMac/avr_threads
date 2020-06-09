@@ -5,8 +5,8 @@
 /* The list of alarms for each thread. The value is a number of milliseconds, or
  * -1 if the thread is not blocked waiting. */
 static int times[AVRT_MAX_THREADS];
-/* The stack for the timer dummy thread. */
-static char timer_stack[AVRT_DUMMY_STACK_SIZE];
+/* The stack for the timer dummy thread, increased for TIMER2_COMPA_vect. */
+static char timer_stack[AVRT_DUMMY_STACK_SIZE + 5];
 
 /* This interrupt fires every millisecond. */
 ISR(TIMER2_COMPA_vect)
