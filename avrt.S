@@ -66,11 +66,8 @@ __SP_H__ = _SFR_IO_ADDR(SPH)
 __SREG__ = _SFR_IO_ADDR(SREG)
 
 avrt_init:
-	in __tmp_reg__, __SREG__
-	cli
 	ldi r24, RUNNING_FLAG
 	sts thread_buf, r24
-	out __SREG__, __tmp_reg__
 	ret
 .size avrt_init, . - avrt_init
 
