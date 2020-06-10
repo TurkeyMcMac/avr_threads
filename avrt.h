@@ -7,7 +7,8 @@
  * You will have to set up a timer to cause periodic context switch interrupts.
  * When compiling, define AVRT_INTERRUPT to be the symbol to use for the
  * interrupt, e.g. TIMER0_OVF_vect. Because interrupts are used, use cli and sei
- * around sections that need to be atomic.
+ * around sections that need to be atomic. Do not trigger a context switch
+ * interrupt before avrt_init completes.
  *
  * Thread Numbering
  * Only a fixed number of threads is supported. When compiling, define
@@ -23,8 +24,8 @@
 #ifndef __ASSEMBLER__
 
 /* Initialize the thread system and register the current thread of execution.
- * Don't call/access other symbols in this library until you've called this.
- * Call it only once. */
+ * Don't call/access other symbols in this library or trigger a context switch
+ * until you've called this and it completes. Call it only once. */
 void avrt_init(void);
 
 /* The ID of the current thread. This cannot be accessed before avrt_init()
