@@ -190,9 +190,10 @@ AVRT_INTERRUPT:
 	sts avrt_self, r18
 	; Restore the context of the new thread:
 	; Restore the stack pointer:
-	ldd __tmp_reg__, Z+1
+	adiw ZL, 1
+	ld __tmp_reg__, Z+
 	out __SP_L__, __tmp_reg__
-	ldd __tmp_reg__, Z+2
+	ld __tmp_reg__, Z
 	out __SP_H__, __tmp_reg__
 	; Restore the SREG:
 	pop __tmp_reg__

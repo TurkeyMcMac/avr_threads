@@ -10,7 +10,7 @@ a practical use for this library, but I think it's interesting.
 
 This is written in assembly because of its low-level nature. I know it works on
 an ATmega328P, but not much beyond that. The instructions `adiw`,
-`ldd Z+q, ...`, `movw`, and `mul` are required, among others.
+`std Z+q, ...`, `movw`, and `mul` are required, among others.
 
 ## Building
 
