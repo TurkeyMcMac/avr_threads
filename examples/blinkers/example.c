@@ -13,7 +13,7 @@ static void wait(unsigned char id)
 }
 
 /* Blink a bunch, duration depending on the given (by reference) ID. */
-static void do_blinks(void *arg)
+static TASK void do_blinks(void *arg)
 {
 	unsigned char id = *(unsigned char *)arg;
 	unsigned char mask = _BV(id + 3);

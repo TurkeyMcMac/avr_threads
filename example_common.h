@@ -20,4 +20,8 @@ static void thread_timer_init(void)
 	TIMSK0 = _BV(TOIE0);
 }
 
+/* Signifies that a function is a thread task, so it does not need to preserve
+ * registers and will not return (instead calling avrt_exit.) */
+#define TASK __attribute__((OS_task, noreturn))
+
 #endif /* EXAMPLE_COMMON_H_ */

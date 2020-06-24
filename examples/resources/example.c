@@ -19,7 +19,7 @@ static void verify(_Bool v)
 }
 
 // The thread sets the pointed boolean to true and finishes:
-static void set_true(void *arg)
+static TASK void set_true(void *arg)
 {
 	_Bool *dest = arg;
 	*dest = 1;

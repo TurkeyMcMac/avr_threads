@@ -46,7 +46,7 @@ static void timer_sleep(int millis)
 	// Interrupts reenabled by avrt_block().
 }
 
-static void pb3_after_1s(void *arg)
+static TASK void pb3_after_1s(void *arg)
 {
 	(void)arg;
 	timer_sleep(1000);
@@ -54,7 +54,7 @@ static void pb3_after_1s(void *arg)
 	avrt_exit();
 }
 
-static void pb4_after_2s(void *arg)
+static TASK void pb4_after_2s(void *arg)
 {
 	(void)arg;
 	timer_sleep(2000);
@@ -62,7 +62,7 @@ static void pb4_after_2s(void *arg)
 	avrt_exit();
 }
 
-static void pb5_after_3s(void *arg)
+static TASK void pb5_after_3s(void *arg)
 {
 	(void)arg;
 	timer_sleep(3000);
