@@ -1,29 +1,29 @@
 #include <avrt.h>
 #include <avr/io.h>
 
-/*
-Thread structure:
-1	flags
-2	stack pointer
-
-The flags byte has either the value 0x00 (unused thread structure), 0x80 (thread
-is running or is queued to run), or 0x40 (thread is blocked, and may be
-unblocked by another thread to start running again.)
-
-Saved stack state (in order of push):
-2	instruction pointer
-32	r0-r31
-1	SREG
-
-The stack pointer in the thread structure points to the top of the stack state.
-
-The threads structures are stored in array of length AVRT_MAX_THREADS. avrt_self
-is the index of the running thread. On a context switch, avrt_self is
-incremented until it finds a thread with a flags value of 0x80, at which point
-it switches to that thread. The index wraps to zero when it hits the end of the
-buffer. When there are no non-blocked threads, a the search continues forever,
-so the program effectively exits.
-*/
+/* Thread structure:
+ * 1	flags
+ * 2	stack pointer
+ *
+ * The flags byte has either the value 0x00 (unused thread structure),
+ * RUNNING_FLAG (thread is running or is queued to run), or BLOCKED_FLAG (thread
+ * is blocked, and may be unblocked by another thread to start running again.)
+ *
+ * Saved stack state (in order of push):
+ * 2	instruction pointer
+ * 32	r0-r31
+ * 1	SREG
+ *
+ * The stack pointer in the thread structure points to the top of the stack
+ * state.
+ *
+ * The threads structures are stored in array of length AVRT_MAX_THREADS.
+ * avrt_self is the index of the running thread. On a context switch, avrt_self
+ * is incremented until it finds a thread with a flags value of 0x80, at which
+ * point it switches to that thread. The index wraps to zero when it hits the
+ * end of the buffer. When there are no non-blocked threads, a the search
+ * continues forever, so the program effectively exits.
+ */
 
 #define THREAD_SIZE 3
 
