@@ -29,7 +29,7 @@ struct mutex {
 
 #define MUTEX_INITIALIZER { .n_filled = 0 }
 
-void mutex_lock(struct mutex *mtx)
+static void mutex_lock(struct mutex *mtx)
 {
 retry:
 	cli();
@@ -54,7 +54,7 @@ retry:
 	}
 }
 
-void mutex_unlock(struct mutex *mtx)
+static void mutex_unlock(struct mutex *mtx)
 {
 	cli();
 	--mtx->n_filled;
